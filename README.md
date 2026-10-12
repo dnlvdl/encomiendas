@@ -8,7 +8,7 @@ Repositorio: https://github.com/dnlvdl/encomiendas
 
 | Carpeta | Descripción | Puerto | Base de datos |
 |---|---|---|---|
-| `pedidos-ms` | Gestión de pedidos: creación, seguimiento y cambio de estado | 8080 | `PedidosDB` |
+| `pedidos-ms` | Gestión de pedidos: creación, seguimiento, cambio de estado y eliminación | 8080 | `PedidosDB` |
 | `logistica-ms` | Vehículos, rutas y asignaciones de pedidos | 8081 | `LogisticaDB` |
 
 ## Requisitos
@@ -78,7 +78,12 @@ java -jar target\pedidos-ms-0.0.1-SNAPSHOT.jar
 
 ## 5. Probar los endpoints
 
-Importar en Postman el archivo `pedidos-ms/postman/pedidos-ms.postman_collection.json`. Antes de ejecutar, ajustar las variables `pedidoId` y `codigoSeguimiento` con los valores que devuelve el `POST` de creación.
+Importar en Postman las colecciones de cada microservicio:
+
+- `pedidos-ms/postman/pedidos-ms.postman_collection.json`
+- `logistica-ms/postman/logistica-ms.postman_collection.json`
+
+Antes de ejecutar, ajustar las variables (`pedidoId`, `codigoSeguimiento`, `vehiculoId`, `rutaId`) con los valores que devuelven los `POST` de creación.
 
 ### Endpoints de pedidos
 
@@ -88,11 +93,34 @@ Importar en Postman el archivo `pedidos-ms/postman/pedidos-ms.postman_collection
 | GET | `/api/v1/pedidos/seguimiento/{codigo}` | Consulta por código de seguimiento | 200 |
 | GET | `/api/v1/pedidos?estado={estado}` | Lista pedidos por estado | 200 |
 | PATCH | `/api/v1/pedidos/{id}/estado` | Avanza al siguiente estado | 200 |
+| DELETE | `/api/v1/pedidos/{id}` | Elimina un pedido (solo en `PENDIENTE_PAGO`) | 204 |
 
-Errores: 400 (datos inválidos), 404 (no existe), 409 (transición de estado no permitida).
+Errores: 400 (datos inválidos), 404 (no existe), 409 (transición de estado no permitida o eliminación no permitida).
+
+### Endpoints de logística
+
+| Método | Ruta | Descripción | Respuesta exitosa |
+|---|---|---|---|
+| POST | `/api/v1/vehiculos` | Registra un vehículo (patente de 6 caracteres) | 201 |
+| GET | `/api/v1/vehiculos` | Lista los vehículos | 200 |
+| GET | `/api/v1/vehiculos/{id}` | Consulta un vehículo | 200 |
+| PATCH | `/api/v1/vehiculos/{id}/estado` | Cambia el estado (`DISPONIBLE` o `EN_MANTENCION`) | 200 |
+| POST | `/api/v1/rutas` | Crea una ruta | 201 |
+| GET | `/api/v1/rutas` | Lista las rutas | 200 |
+| POST | `/api/v1/asignaciones` | Asigna un pedido a un vehículo y una ruta | 201 |
+| GET | `/api/v1/asignaciones` | Lista las asignaciones | 200 |
+
+Reglas de la asignación:
+- El vehículo debe estar `DISPONIBLE` y no tener otra asignación activa.
+- El peso del pedido no puede superar la capacidad del vehículo.
+- Un pedido no puede tener dos asignaciones activas.
+
+Errores: 400 (datos inválidos o peso excedido), 404 (vehículo, ruta o pedido no existe), 409 (vehículo no disponible o pedido ya asignado).
+
+**Nota de diseño:** `logistica-ms` no consulta a `pedidos-ms` para conocer el peso del pedido. Por eso el peso se envía en el cuerpo de la asignación. Una versión futura debería obtenerlo mediante una llamada HTTP entre servicios.
 
 ## Estado del proyecto
 
-- `pedidos-ms`: entidades, repositorios, servicio, controlador, validaciones y manejo de errores. Probado con la colección de Postman.
-- `logistica-ms`: entidades (`Vehiculo`, `Ruta`, `Asignacion`) y repositorios conectados a `LogisticaDB`. Pendiente: endpoints.
+- `pedidos-ms`: completo. Entidades, repositorios, servicio, controlador, validaciones, manejo de errores y colección de Postman.
+- `logistica-ms`: completo en vehículos, rutas y asignaciones, con colección de Postman. Pendiente: pruebas automatizadas.
 - Pendiente: microservicios de trabajadores y autenticación.
