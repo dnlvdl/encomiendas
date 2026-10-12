@@ -1,0 +1,57 @@
+{
+  "info": {
+    "_postman_id": "autenticacion-ms-encomiendas",
+    "name": "autenticacion-ms",
+    "description": "Pruebas de usuarios y login del microservicio autenticacion-ms (puerto 8083).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8083" },
+    { "key": "trabajadorId", "value": "3" }
+  ],
+  "item": [
+    {
+      "name": "crearUsuario",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin.logistica\",\n  \"password\": \"clave123\",\n  \"trabajadorId\": {{trabajadorId}},\n  \"rolesNombres\": [\"ADMINISTRADOR_LOGISTICA\"]\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/usuarios", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios"] }
+      }
+    },
+    {
+      "name": "verUsuarios",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/v1/usuarios", "host": ["{{baseUrl}}"], "path": ["api", "v1", "usuarios"] }
+      }
+    },
+    {
+      "name": "login correcto",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin.logistica\",\n  \"password\": \"clave123\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+      }
+    },
+    {
+      "name": "login clave incorrecta (401)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin.logistica\",\n  \"password\": \"claveMala\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] }
+      }
+    }
+  ]
+}
