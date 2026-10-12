@@ -1,0 +1,8 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/api/v1/pedidos/1/estado
+method: PATCH
+body:
+  type: json
+  content: "{\r\n  \"estado\": \"ASIGNADO\"\r\n}"
+order: 3000

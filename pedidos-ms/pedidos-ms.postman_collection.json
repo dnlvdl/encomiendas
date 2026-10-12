@@ -1,0 +1,115 @@
+﻿{
+    "item":  [
+                 {
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "localhost"
+                                                          ],
+                                                 "protocol":  "http",
+                                                 "raw":  "http://localhost:8080/api/v1/pedidos",
+                                                 "port":  "8080",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "pedidos"
+                                                          ]
+                                             },
+                                     "method":  "POST",
+                                     "body":  {
+                                                  "raw":  "{\r\n  \\\"remitenteId\\\": 1,\r\n  \\\"destinatarioId\\\": 2,\r\n  \\\"sucursalId\\\": 1,\r\n  \\\"destinoDireccionId\\\": 2,\r\n  \\\"tamano\\\": \\\"MEDIANO\\\",\r\n  \\\"pesoKg\\\": 2.50,\r\n  \\\"esFragil\\\": true,\r\n  \\\"esRigido\\\": false,\r\n  \\\"esDelicado\\\": false,\r\n  \\\"declaracionAceptada\\\": true\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "description":  "",
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 },
+                     "name":  "crearPedido",
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "request":  {
+                                     "method":  "GET",
+                                     "url":  {
+                                                 "host":  [
+                                                              "localhost"
+                                                          ],
+                                                 "protocol":  "http",
+                                                 "raw":  "http://localhost:8080/api/v1/pedidos/seguimiento/ENC-6AB9DC857963",
+                                                 "port":  "8080",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "pedidos",
+                                                              "seguimiento",
+                                                              "ENC-6AB9DC857963"
+                                                          ]
+                                             },
+                                     "description":  "",
+                                     "header":  [
+
+                                                ]
+                                 },
+                     "name":  "seguimiento",
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "request":  {
+                                     "url":  {
+                                                 "host":  [
+                                                              "localhost"
+                                                          ],
+                                                 "protocol":  "http",
+                                                 "raw":  "http://localhost:8080/api/v1/pedidos/1/estado",
+                                                 "port":  "8080",
+                                                 "path":  [
+                                                              "api",
+                                                              "v1",
+                                                              "pedidos",
+                                                              "1",
+                                                              "estado"
+                                                          ]
+                                             },
+                                     "method":  "PATCH",
+                                     "body":  {
+                                                  "raw":  "{\r\n  \\\"estado\\\": \\\"ASIGNADO\\\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              },
+                                                  "mode":  "raw"
+                                              },
+                                     "description":  "",
+                                     "header":  [
+                                                    {
+                                                        "key":  "Content-Type",
+                                                        "value":  "application/json"
+                                                    }
+                                                ]
+                                 },
+                     "name":  "cambiarEstado",
+                     "response":  [
+
+                                  ]
+                 }
+             ],
+    "info":  {
+                 "name":  "pedidos-ms",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+                 "_postman_id":  "ada26cEcD2c24a54808aAB82"
+             }
+}

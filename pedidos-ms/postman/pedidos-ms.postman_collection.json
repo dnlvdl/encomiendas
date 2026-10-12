@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "pedidos-ms",
+    "description": "Pruebas de los endpoints de pedidos (microservicio pedidos-ms). Antes de ejecutar, ajusta codigoSeguimiento y pedidoId con los valores que devuelve el POST de crear pedido.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "pedidoId", "value": "1" },
+    { "key": "codigoSeguimiento", "value": "ENC-REEMPLAZAR" }
+  ],
+  "item": [
+    {
+      "name": "1 - Crear pedido (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"remitenteId\": 1, \"destinatarioId\": 2, \"sucursalId\": 1, \"destinoDireccionId\": 2, \"tamano\": \"MEDIANO\", \"pesoKg\": 2.50, \"esFragil\": true, \"esRigido\": false, \"esDelicado\": false, \"declaracionAceptada\": true}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos"]
+        }
+      }
+    },
+    {
+      "name": "2 - Seguimiento por código (200)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos/seguimiento/{{codigoSeguimiento}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos", "seguimiento", "{{codigoSeguimiento}}"]
+        }
+      }
+    },
+    {
+      "name": "3 - Cambiar estado a PAGADO (200)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"PAGADO\", \"observacion\": \"Pago recibido\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos/{{pedidoId}}/estado",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos", "{{pedidoId}}", "estado"]
+        }
+      }
+    },
+    {
+      "name": "4 - Error: saltar estado (409)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"ENTREGADO\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos/{{pedidoId}}/estado",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos", "{{pedidoId}}", "estado"]
+        }
+      }
+    },
+    {
+      "name": "5 - Error: peso excedido (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"remitenteId\": 1, \"destinatarioId\": 2, \"sucursalId\": 1, \"destinoDireccionId\": 2, \"tamano\": \"GRANDE\", \"pesoKg\": 60, \"esFragil\": false, \"esRigido\": false, \"esDelicado\": false, \"declaracionAceptada\": true}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos"]
+        }
+      }
+    },
+    {
+      "name": "6 - Error: código inexistente (404)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos/seguimiento/NOEXISTE",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos", "seguimiento", "NOEXISTE"]
+        }
+      }
+    },
+    {
+      "name": "7 - Listar por estado (200)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos?estado=ASIGNADO",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos"],
+          "query": [{ "key": "estado", "value": "ASIGNADO" }]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+$kind: http-request
+description: ""
+url: http://localhost:8080/api/v1/pedidos/seguimiento/ENC-6AB9DC857963
+method: GET
+order: 2000
