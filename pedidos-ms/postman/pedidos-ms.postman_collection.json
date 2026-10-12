@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "pedidos-ms",
-    "description": "Pruebas de los endpoints de pedidos (microservicio pedidos-ms). Antes de ejecutar, ajusta codigoSeguimiento y pedidoId con los valores que devuelve el POST de crear pedido.",
+    "description": "Pruebas de los endpoints de pedidos (pedidos-ms). Antes de ejecutar, ajusta pedidoId y codigoSeguimiento con los valores que devuelve el POST de crear pedido.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -105,6 +105,28 @@
           "host": ["{{baseUrl}}"],
           "path": ["api", "v1", "pedidos"],
           "query": [{ "key": "estado", "value": "ASIGNADO" }]
+        }
+      }
+    },
+    {
+      "name": "8 - Eliminar pedido PENDIENTE_PAGO (204)",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos/{{pedidoId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos", "{{pedidoId}}"]
+        }
+      }
+    },
+    {
+      "name": "9 - Error: eliminar pedido ya pagado (409)",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/pedidos/{{pedidoId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "pedidos", "{{pedidoId}}"]
         }
       }
     }
