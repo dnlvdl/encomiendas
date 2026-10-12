@@ -11,6 +11,7 @@ Repositorio: https://github.com/dnlvdl/encomiendas
 | `pedidos-ms` | Gestión de pedidos: creación, seguimiento, cambio de estado y eliminación | 8080 | `PedidosDB` |
 | `logistica-ms` | Vehículos, rutas y asignaciones de pedidos | 8081 | `LogisticaDB` |
 | `trabajadores-ms` | Trabajadores: conductores y administrativos | 8082 | `TrabajadorDB` |
+| `autenticacion-ms` | Usuarios, roles y login | 8083 | `AutenticacionDB` |
 
 ## Requisitos
 
@@ -86,6 +87,18 @@ cd trabajadores-ms
 
 Cuando aparezca `Started TrabajadoresMsApplication`, el servicio está disponible en `http://localhost:8082`.
 
+### autenticacion-ms
+
+En otra ventana de PowerShell (con sus propias variables de entorno):
+
+```powershell
+cd autenticacion-ms
+.\mvnw.cmd clean package
+.\mvnw.cmd spring-boot:run
+```
+
+Cuando aparezca `Started AutenticacionMsApplication`, el servicio está disponible en `http://localhost:8083`.
+
 ### Ejecutar el .jar generado
 
 Después de `clean package`, el archivo queda en `target/`:
@@ -101,6 +114,7 @@ Importar en Postman las colecciones de cada microservicio:
 - `pedidos-ms/postman/pedidos-ms.postman_collection.json`
 - `logistica-ms/postman/logistica-ms.postman_collection.json`
 - `trabajadores-ms/postman/trabajadores-ms.postman_collection.json`
+- `autenticacion-ms/postman/autenticacion-ms.postman_collection.json`
 
 Antes de ejecutar, ajustar las variables (`pedidoId`, `codigoSeguimiento`, `vehiculoId`, `rutaId`, `trabajadorId`) con los valores que devuelven los `POST` de creación.
 
@@ -154,9 +168,26 @@ Reglas:
 
 Errores: 400 (datos inválidos o conductor sin licencia), 404 (no existe), 409 (rut repetido).
 
+### Endpoints de autenticación
+
+| Método | Ruta | Descripción | Respuesta exitosa |
+|---|---|---|---|
+| POST | `/api/v1/usuarios` | Crea un usuario con clave y roles | 201 |
+| GET | `/api/v1/usuarios` | Lista los usuarios (sin clave) | 200 |
+| POST | `/api/v1/auth/login` | Valida usuario y clave; registra el último acceso | 200 |
+
+Reglas:
+- La clave se guarda cifrada con BCrypt; nunca se devuelve en las respuestas.
+- Cada usuario queda vinculado a un trabajador (`trabajadorId`) y tiene uno o más roles.
+- Los roles se buscan por nombre; si un rol no existe, la creación falla.
+- Un usuario inactivo no puede iniciar sesión.
+- El login no entrega token todavía. JWT queda pendiente para una versión futura.
+
+Errores: 400 (datos inválidos), 401 (usuario o clave incorrectos; el mensaje es el mismo en los tres casos), 404 (rol no existe), 409 (username repetido).
+
 ## Estado del proyecto
 
 - `pedidos-ms`: completo. Entidades, repositorios, servicio, controlador, validaciones, manejo de errores y colección de Postman.
 - `logistica-ms`: completo en vehículos, rutas y asignaciones, con colección de Postman.
 - `trabajadores-ms`: completo en trabajadores, con colección de Postman.
-- Pendiente: microservicio de autenticación (`AutenticacionDB`).
+- `autenticacion-ms`: completo en usuarios y login (sin JWT), con colección de Postman.
