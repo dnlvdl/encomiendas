@@ -31,4 +31,9 @@ public class ManejadorExcepciones {
     public ResponseEntity<Map<String, String>> solicitudInvalida(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> conflicto(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", ex.getMessage()));
+    }
 }
