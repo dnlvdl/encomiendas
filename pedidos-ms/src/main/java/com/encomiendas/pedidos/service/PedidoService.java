@@ -104,6 +104,18 @@ public class PedidoService {
         return pedido;
     }
 
+    @Transactional
+    public void eliminar(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Pedido", id));
+
+        // Solo se puede eliminar mientras no esté pagado.
+        if (pedido.getEstado() != Pedido.Estado.PENDIENTE_PAGO) {
+            throw new IllegalStateException("Solo se puede eliminar un pedido en estado PENDIENTE_PAGO");
+        }
+        pedidoRepository.delete(pedido);
+    }
+
     private Pedido.Estado siguienteEstado(Pedido.Estado actual) {
         Pedido.Estado[] estados = Pedido.Estado.values();
         int indice = actual.ordinal() + 1;
