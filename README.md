@@ -10,6 +10,7 @@ Repositorio: https://github.com/dnlvdl/encomiendas
 |---|---|---|---|
 | `pedidos-ms` | Gestión de pedidos: creación, seguimiento, cambio de estado y eliminación | 8080 | `PedidosDB` |
 | `logistica-ms` | Vehículos, rutas y asignaciones de pedidos | 8081 | `LogisticaDB` |
+| `trabajadores-ms` | Trabajadores: conductores y administrativos | 8082 | `TrabajadorDB` |
 
 ## Requisitos
 
@@ -29,7 +30,12 @@ cd encomiendas
 
 ## 2. Crear las bases de datos
 
-Crear en SQL Server las bases `PedidosDB` y `LogisticaDB` con sus tablas. Los scripts de creación están en la carpeta `sql/`.
+Crear en SQL Server las bases `PedidosDB`, `LogisticaDB` y `TrabajadorDB` con sus tablas. Los scripts de creación están en la carpeta `sql/`:
+
+- `01_PedidosDB.sql`
+- `02_LogisticaDB.sql`
+- `03_datos_prueba_PedidosDB.sql` (datos de prueba, opcional)
+- `04_TrabajadorDB.sql`
 
 ## 3. Configurar credenciales
 
@@ -68,6 +74,18 @@ cd logistica-ms
 
 Cuando aparezca `Started LogisticaMsApplication`, el servicio está disponible en `http://localhost:8081`.
 
+### trabajadores-ms
+
+En otra ventana de PowerShell (con sus propias variables de entorno):
+
+```powershell
+cd trabajadores-ms
+.\mvnw.cmd clean package
+.\mvnw.cmd spring-boot:run
+```
+
+Cuando aparezca `Started TrabajadoresMsApplication`, el servicio está disponible en `http://localhost:8082`.
+
 ### Ejecutar el .jar generado
 
 Después de `clean package`, el archivo queda en `target/`:
@@ -82,8 +100,9 @@ Importar en Postman las colecciones de cada microservicio:
 
 - `pedidos-ms/postman/pedidos-ms.postman_collection.json`
 - `logistica-ms/postman/logistica-ms.postman_collection.json`
+- `trabajadores-ms/postman/trabajadores-ms.postman_collection.json`
 
-Antes de ejecutar, ajustar las variables (`pedidoId`, `codigoSeguimiento`, `vehiculoId`, `rutaId`) con los valores que devuelven los `POST` de creación.
+Antes de ejecutar, ajustar las variables (`pedidoId`, `codigoSeguimiento`, `vehiculoId`, `rutaId`, `trabajadorId`) con los valores que devuelven los `POST` de creación.
 
 ### Endpoints de pedidos
 
@@ -119,8 +138,25 @@ Errores: 400 (datos inválidos o peso excedido), 404 (vehículo, ruta o pedido n
 
 **Nota de diseño:** `logistica-ms` no consulta a `pedidos-ms` para conocer el peso del pedido. Por eso el peso se envía en el cuerpo de la asignación. Una versión futura debería obtenerlo mediante una llamada HTTP entre servicios.
 
+### Endpoints de trabajadores
+
+| Método | Ruta | Descripción | Respuesta exitosa |
+|---|---|---|---|
+| POST | `/api/v1/trabajadores` | Crea un trabajador | 201 |
+| GET | `/api/v1/trabajadores` | Lista los trabajadores | 200 |
+| GET | `/api/v1/trabajadores/{id}` | Consulta un trabajador | 200 |
+| PATCH | `/api/v1/trabajadores/{id}/activo` | Invierte el estado activo (sin body) | 200 |
+| DELETE | `/api/v1/trabajadores/{id}` | Borra el trabajador de la tabla | 204 |
+
+Reglas:
+- `cargoId = 1` corresponde a conductor, que debe tener número de licencia. `cargoId = 2` corresponde a administrativo, que no la necesita. La licencia de un administrativo se guarda vacía aunque se envíe.
+- El rut no puede repetirse.
+
+Errores: 400 (datos inválidos o conductor sin licencia), 404 (no existe), 409 (rut repetido).
+
 ## Estado del proyecto
 
 - `pedidos-ms`: completo. Entidades, repositorios, servicio, controlador, validaciones, manejo de errores y colección de Postman.
-- `logistica-ms`: completo en vehículos, rutas y asignaciones, con colección de Postman. Pendiente: pruebas automatizadas.
-- Pendiente: microservicios de trabajadores y autenticación.
+- `logistica-ms`: completo en vehículos, rutas y asignaciones, con colección de Postman.
+- `trabajadores-ms`: completo en trabajadores, con colección de Postman.
+- Pendiente: microservicio de autenticación (`AutenticacionDB`).

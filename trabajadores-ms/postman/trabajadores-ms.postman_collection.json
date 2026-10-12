@@ -1,0 +1,78 @@
+{
+  "info": {
+    "_postman_id": "trabajadores-ms-encomiendas",
+    "name": "trabajadores-ms",
+    "description": "Pruebas de trabajadores (conductores y administrativos) del microservicio trabajadores-ms (puerto 8082).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8082" },
+    { "key": "trabajadorId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "crearConductor",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rut\": \"12345678\",\n  \"dv\": \"5\",\n  \"primerNombre\": \"Pedro\",\n  \"primerApellido\": \"Pérez\",\n  \"segundoApellido\": \"González\",\n  \"celular\": \"912345678\",\n  \"correo\": \"pedro@correo.cl\",\n  \"cargoId\": 1,\n  \"fechaIngreso\": \"2026-10-01\",\n  \"licencia\": \"A1234567\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores"] }
+      }
+    },
+    {
+      "name": "crearConductor sin licencia (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rut\": \"11111111\",\n  \"dv\": \"1\",\n  \"primerNombre\": \"Jorge\",\n  \"primerApellido\": \"Bustos\",\n  \"segundoApellido\": \"González\",\n  \"celular\": \"912345678\",\n  \"correo\": \"jorge@correo.cl\",\n  \"cargoId\": 1,\n  \"fechaIngreso\": \"2026-10-01\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores"] }
+      }
+    },
+    {
+      "name": "crearAdministrativo",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rut\": \"98765432\",\n  \"dv\": \"1\",\n  \"primerNombre\": \"María\",\n  \"primerApellido\": \"López\",\n  \"segundoApellido\": \"Soto\",\n  \"celular\": \"987654321\",\n  \"correo\": \"maria@correo.cl\",\n  \"cargoId\": 2,\n  \"fechaIngreso\": \"2026-10-01\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores"] }
+      }
+    },
+    {
+      "name": "verTrabajadores",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores"] }
+      }
+    },
+    {
+      "name": "verTrabajadorPorId",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores/{{trabajadorId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores", "{{trabajadorId}}"] }
+      }
+    },
+    {
+      "name": "alternarActivo",
+      "request": {
+        "method": "PATCH",
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores/{{trabajadorId}}/activo", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores", "{{trabajadorId}}", "activo"] }
+      }
+    },
+    {
+      "name": "borrarTrabajador",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/api/v1/trabajadores/{{trabajadorId}}", "host": ["{{baseUrl}}"], "path": ["api", "v1", "trabajadores", "{{trabajadorId}}"] }
+      }
+    }
+  ]
+}
